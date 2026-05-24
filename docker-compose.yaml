@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    hostname: rabbitmq
+    container_name: rabbitmq
+    restart: always
+    expose:
+      - "5672"
+      - "15672"
+    env_file:
+      - .env
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  line-provider:
+    build:
+      context: ./services/line-provider
+      dockerfile: Dockerfile
+    container_name: line_provider_service
+    command:
+      - uvicorn
+      - main:app
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8000"
+      - "--workers"
+      - "4"
+    expose:
+      - "8000"
+    restart: always
+    env_file:
+      - .env
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "10"
+        max-size: "200k"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      pg:
+        condition: service_healthy
+
+volumes:
+  rabbitmq_data:
