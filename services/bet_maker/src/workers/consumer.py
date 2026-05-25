@@ -124,7 +124,9 @@ async def run() -> None:
         except Exception:
             logger.exception("Periodic reconcile crashed")
 
-    reconcile_task = asyncio.create_task(_periodic_reconcile(), name="periodic-reconcile")
+    reconcile_task = asyncio.create_task(
+        _periodic_reconcile(), name="periodic-reconcile"
+    )
 
     consumer_tag = await queue.consume(_on_message)
     logger.info("Listening for messages on %s", settings.RABBITMQ_QUEUE)

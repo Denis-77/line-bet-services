@@ -50,11 +50,11 @@ class RabbitMQPublisher:
     """
 
     def __init__(
-            self,
-            url: str = settings.RABBITMQ_URL,
-            exchange_name: str = settings.RABBITMQ_EXCHANGE,
-            routing_key: str = settings.RABBITMQ_ROUTING_KEY,
-            retry_interval_seconds: float = settings.PUBLISH_RETRY_INTERVAL_SECONDS,
+        self,
+        url: str = settings.RABBITMQ_URL,
+        exchange_name: str = settings.RABBITMQ_EXCHANGE,
+        routing_key: str = settings.RABBITMQ_ROUTING_KEY,
+        retry_interval_seconds: float = settings.PUBLISH_RETRY_INTERVAL_SECONDS,
     ) -> None:
         self._url = url
         self._exchange_name = exchange_name
@@ -78,7 +78,9 @@ class RabbitMQPublisher:
                 type(exc).__name__,
             )
 
-        self._retry_task = asyncio.create_task(self._retry_loop(), name="publisher-retry")
+        self._retry_task = asyncio.create_task(
+            self._retry_loop(), name="publisher-retry"
+        )
 
     async def stop(self) -> None:
         self._closing = True
@@ -99,9 +101,9 @@ class RabbitMQPublisher:
         aio_pika takes care of re-creating channels when they are lost.
         """
         if (
-                self._exchange is not None
-                and self._connection is not None
-                and not self._connection.is_closed
+            self._exchange is not None
+            and self._connection is not None
+            and not self._connection.is_closed
         ):
             return self._exchange
 
@@ -161,11 +163,17 @@ class RabbitMQPublisher:
                         )
 
                     async with self._pending_lock:
-                        self._pending = self._pending[len(buffered):]
-                    logger.info("Successfully replayed %d buffered messages to RabbitMQ", len(buffered))
+                        self._pending = self._pending[len(buffered) :]
+                    logger.info(
+                        "Successfully replayed %d buffered messages to RabbitMQ",
+                        len(buffered),
+                    )
 
                 except (AMQPException, ConnectionError, asyncio.TimeoutError) as exc:
-                    logger.warning("Retry to RabbitMQ failed (%s), will try again later.", type(exc).__name__)
+                    logger.warning(
+                        "Retry to RabbitMQ failed (%s), will try again later.",
+                        type(exc).__name__,
+                    )
 
             except asyncio.CancelledError:
                 break

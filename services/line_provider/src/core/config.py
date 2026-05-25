@@ -19,10 +19,7 @@ class Settings(BaseSettings):
     RABBITMQ_PREFETCH_COUNT: int = 50
     PUBLISH_RETRY_INTERVAL_SECONDS: int = 10
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        extra="ignore"
-    )
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
 settings = Settings()

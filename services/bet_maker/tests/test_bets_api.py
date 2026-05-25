@@ -51,7 +51,9 @@ async def test_place_bet_success(
 
 @pytest.mark.asyncio
 async def test_place_bet_event_not_found(client: AsyncClient) -> None:
-    response = await client.post("/bet", json={"event_id": "missing", "amount": "10.00"})
+    response = await client.post(
+        "/bet", json={"event_id": "missing", "amount": "10.00"}
+    )
     assert response.status_code == 404
 
 
@@ -59,9 +61,13 @@ async def test_place_bet_event_not_found(client: AsyncClient) -> None:
 async def test_place_bet_event_with_terminal_status_rejected(
     client: AsyncClient, fake_line_provider: FakeLineProvider
 ) -> None:
-    _add_event(fake_line_provider, event_id="evt-done", status=EventStatus.FIRST_TEAM_WON)
+    _add_event(
+        fake_line_provider, event_id="evt-done", status=EventStatus.FIRST_TEAM_WON
+    )
 
-    response = await client.post("/bet", json={"event_id": "evt-done", "amount": "5.00"})
+    response = await client.post(
+        "/bet", json={"event_id": "evt-done", "amount": "5.00"}
+    )
     assert response.status_code == 409
 
 
@@ -71,7 +77,9 @@ async def test_place_bet_after_deadline_rejected(
 ) -> None:
     _add_event(fake_line_provider, event_id="evt-past", deadline=_past_dt())
 
-    response = await client.post("/bet", json={"event_id": "evt-past", "amount": "5.00"})
+    response = await client.post(
+        "/bet", json={"event_id": "evt-past", "amount": "5.00"}
+    )
     assert response.status_code == 409
 
 

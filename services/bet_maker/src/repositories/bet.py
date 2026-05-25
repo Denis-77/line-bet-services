@@ -15,13 +15,17 @@ class BetRepository:
         self._session = session
 
     async def create(self, event_id: str, amount: Decimal) -> Bet:
-        bet = Bet(id=uuid.uuid4(), event_id=event_id, amount=amount, status=BetStatus.PENDING)
+        bet = Bet(
+            id=uuid.uuid4(), event_id=event_id, amount=amount, status=BetStatus.PENDING
+        )
         self._session.add(bet)
         await self._session.flush()
         return bet
 
     async def list_all(self) -> Sequence[Bet]:
-        result = await self._session.execute(select(Bet).order_by(Bet.created_at.desc()))
+        result = await self._session.execute(
+            select(Bet).order_by(Bet.created_at.desc())
+        )
         return result.scalars().all()
 
     async def settle_for_event(self, event_id: str, new_status: BetStatus) -> int:

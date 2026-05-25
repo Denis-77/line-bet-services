@@ -35,10 +35,7 @@ class Settings(BaseSettings):
     TEST_POSTGRES_PORT: int
     TEST_POSTGRES_HOST: str
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        extra="ignore"
-    )
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     @property
     def DATABASE_URL(self) -> str:
@@ -55,5 +52,6 @@ class Settings(BaseSettings):
             f"{self.TEST_POSTGRES_USER}:{self.TEST_POSTGRES_PASSWORD}@"
             f"{self.TEST_POSTGRES_HOST}:{self.TEST_POSTGRES_PORT}/{self.TEST_POSTGRES_DB}"
         )
+
 
 settings = Settings()

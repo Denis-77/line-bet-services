@@ -108,7 +108,9 @@ async def test_handler_is_idempotent_by_version(
     async with session_factory() as s:
         await handle_status_message(s, fake_line_provider, msg_v3)
 
-    msg_v2_old = _make_message(event_id="e1", status=EventStatus.FIRST_TEAM_LOST, version=2)
+    msg_v2_old = _make_message(
+        event_id="e1", status=EventStatus.FIRST_TEAM_LOST, version=2
+    )
     async with session_factory() as s:
         await handle_status_message(s, fake_line_provider, msg_v2_old)
 
@@ -184,7 +186,9 @@ async def test_reconcile_settles_missed_terminal_status(
     await reconcile_events(session_factory, fake_line_provider)
 
     async with session_factory() as verify:
-        result = await verify.execute(select(Bet).where(Bet.event_id == "reconcile-evt"))
+        result = await verify.execute(
+            select(Bet).where(Bet.event_id == "reconcile-evt")
+        )
         bets = result.scalars().all()
         assert {bet.status for bet in bets} == {BetStatus.WON}
 

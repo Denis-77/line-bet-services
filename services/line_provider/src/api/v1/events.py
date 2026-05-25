@@ -5,7 +5,11 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from src.messaging.publisher import EventPublisher
 from src.messaging.publisher import publisher as default_publisher
 from src.schemas.event import Event, EventCreate, EventUpdate
-from src.storage.memory import EventAlreadyExistsError, EventNotFoundError, InMemoryEventStorage
+from src.storage.memory import (
+    EventAlreadyExistsError,
+    EventNotFoundError,
+    InMemoryEventStorage,
+)
 from src.storage.memory import storage as default_storage
 
 router = APIRouter(prefix="/events", tags=["events"])

@@ -16,7 +16,9 @@ logger = logging.getLogger(__name__)
 class EventsService:
     """Read-side service for events available for betting."""
 
-    def __init__(self, session: AsyncSession, line_provider: LineProviderClient) -> None:
+    def __init__(
+        self, session: AsyncSession, line_provider: LineProviderClient
+    ) -> None:
         self._session = session
         self._cache_repo = EventsCacheRepository(session)
         self._line_provider = line_provider

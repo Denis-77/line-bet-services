@@ -16,6 +16,7 @@ class EventNotFoundError(Exception):
 
 class EventClosedError(Exception):
     """Thrown when attempting to modify a completed event."""
+
     pass
 
 
@@ -57,9 +58,7 @@ class InMemoryEventStorage:
             events = [event for event in events if event.is_active(now)]
         return events
 
-    async def update(
-            self, event_id: str, payload: EventUpdate
-    ) -> tuple[Event, bool]:
+    async def update(self, event_id: str, payload: EventUpdate) -> tuple[Event, bool]:
         """Update an event. Returns (event, status_changed)."""
         async with self._lock:
             current = self._events.get(event_id)
@@ -67,14 +66,16 @@ class InMemoryEventStorage:
                 raise EventNotFoundError(event_id)
 
             if current.status in TERMINAL_STATUSES:
-                raise EventClosedError(f"Cannot update event {event_id} in terminal status {current.status}")
+                raise EventClosedError(
+                    f"Cannot update event {event_id} in terminal status {current.status}"
+                )
 
             update_data = payload.model_dump(exclude_unset=True, exclude_none=True)
             if not update_data:
                 return current, False
 
             status_changed = (
-                    "status" in update_data and update_data["status"] != current.status
+                "status" in update_data and update_data["status"] != current.status
             )
 
             update_data["version"] = current.version + 1

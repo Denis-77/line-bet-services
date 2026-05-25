@@ -28,7 +28,9 @@ class EventNotOpenForBetsError(BetError):
 
 
 class BetsService:
-    def __init__(self, session: AsyncSession, line_provider: LineProviderClient) -> None:
+    def __init__(
+        self, session: AsyncSession, line_provider: LineProviderClient
+    ) -> None:
         self._session = session
         self._repo = BetRepository(session)
         self._events_service = EventsService(session, line_provider)
@@ -58,5 +60,7 @@ class BetsService:
             return 0
         updated = await self._repo.settle_for_event(event_id, target)
         if updated:
-            logger.info("Settled %d bets for event %s as %s", updated, event_id, target.value)
+            logger.info(
+                "Settled %d bets for event %s as %s", updated, event_id, target.value
+            )
         return updated

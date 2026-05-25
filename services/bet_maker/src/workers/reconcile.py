@@ -48,7 +48,9 @@ async def reconcile_events(
             )
             if event.status in TERMINAL_EVENT_STATUSES:
                 terminal_count += 1
-                settled_total += await bets_service.settle_terminal_event(event.id, event.status)
+                settled_total += await bets_service.settle_terminal_event(
+                    event.id, event.status
+                )
         await session.commit()
         logger.info(
             "Reconcile: synced %d events, %d terminal, %d bets settled",

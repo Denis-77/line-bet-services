@@ -28,7 +28,9 @@ class LineProviderClient:
         await self._client.aclose()
 
     async def list_events(self, *, active: bool = False) -> list[LineProviderEvent]:
-        response = await self._client.get("/events", params={"active": str(active).lower()})
+        response = await self._client.get(
+            "/events", params={"active": str(active).lower()}
+        )
         response.raise_for_status()
         return [LineProviderEvent.model_validate(item) for item in response.json()]
 

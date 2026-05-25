@@ -15,7 +15,9 @@ from src.services.bets import (
 router = APIRouter(tags=["bets"])
 
 
-@router.post("/bet", response_model=BetCreatedResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/bet", response_model=BetCreatedResponse, status_code=status.HTTP_201_CREATED
+)
 async def place_bet(
     payload: BetCreate,
     session: AsyncSession = Depends(get_db_session),

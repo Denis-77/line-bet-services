@@ -30,15 +30,10 @@ def _ensure_tzaware(value: datetime) -> datetime:
 
 
 Coefficient = Annotated[
-    Decimal,
-    Field(gt=Decimal("0"), max_digits=8),
-    AfterValidator(_quantize_coefficient)
+    Decimal, Field(gt=Decimal("0"), max_digits=8), AfterValidator(_quantize_coefficient)
 ]
 
-TzAwareDatetime = Annotated[
-    datetime,
-    AfterValidator(_ensure_tzaware)
-]
+TzAwareDatetime = Annotated[datetime, AfterValidator(_ensure_tzaware)]
 
 
 class EventBase(BaseModel):
