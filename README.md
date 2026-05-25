@@ -125,31 +125,6 @@ black --check app tests
 mypy app
 ```
 
-Run migrations against a running Postgres (the docker-compose service handles this automatically):
-
-```bash
-cd services/bet_maker
-BM_DATABASE_URL=postgresql+asyncpg://bet_maker:bet_maker@localhost:5432/bet_maker \
-  alembic upgrade head
-```
-
-## Configuration
-
-Environment variables (prefixed `LP_` for line-provider, `BM_` for bet-maker):
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LP_HOST` / `LP_PORT` | `0.0.0.0` / `8000` | Bind address |
-| `LP_RABBITMQ_URL` | `amqp://guest:guest@localhost:5672/` | RabbitMQ DSN |
-| `LP_RABBITMQ_EXCHANGE` | `events` | Exchange name |
-| `BM_DATABASE_URL` | `postgresql+asyncpg://bet_maker:bet_maker@localhost:5432/bet_maker` | PostgreSQL DSN |
-| `BM_RABBITMQ_URL` | `amqp://guest:guest@localhost:5672/` | RabbitMQ DSN |
-| `BM_RABBITMQ_QUEUE` | `bet-maker.events` | Consumer queue |
-| `BM_RABBITMQ_DLX_EXCHANGE` | `events.dlx` | Dead-letter exchange |
-| `BM_LINE_PROVIDER_URL` | `http://localhost:8001` | line-provider base URL |
-| `BM_RECONCILE_INTERVAL_SECONDS` | `60.0` | Periodic reconcile cadence |
-| `BM_RABBITMQ_PREFETCH_COUNT` | `50` | Worker prefetch |
-
 ## Project layout
 
 ```
@@ -158,18 +133,18 @@ betting_software/
 ├── README.md
 └── services/
     ├── line_provider/
-    │   ├── app/
-    │   │   ├── api/events.py            # CRUD endpoints
+    │   ├── src/
+    │   │   ├── api/v1/events.py            # CRUD endpoints
     │   │   ├── core/                    # config, logging
-    │   │   ├── models/event.py          # pydantic event model
+    │   │   ├── schemas/event.py          # pydantic event model
     │   │   ├── storage/memory.py        # in-memory storage
     │   │   ├── messaging/publisher.py   # RabbitMQ publisher
     │   │   └── main.py
     │   └── tests/
     └── bet_maker/
         ├── alembic/
-        ├── app/
-        │   ├── api/                     # /events, /bet, /bets
+        ├── src/
+        │   ├── api/v1/                     # /events, /bet, /bets + deps out of versions
         │   ├── core/                    # config, logging
         │   ├── db/                      # SQLAlchemy engine/session
         │   ├── messaging/               # line-provider HTTP client
